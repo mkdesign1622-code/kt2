@@ -14,7 +14,7 @@
   --card:#f8f9fa;
   --radius:12px;
   --container:1100px;
-  --gap:20px;
+  --gap:16px;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -43,7 +43,7 @@ body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helveti
 .section-title{font-family:'Playfair Display',serif;font-size:24px;margin:30px 0 16px}
 .categories{padding:10px 0}
 .slider{position:relative;overflow:hidden;border-radius:12px;background:var(--card);padding:18px}
-.slides{display:flex;gap:16px;transition:transform .4s ease}
+.slides{display:flex;gap:var(--gap);transition:transform .45s cubic-bezier(.2,.9,.2,1);will-change:transform}
 .slide{min-width:220px;flex:0 0 220px;border-radius:10px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.4));display:flex;flex-direction:column;align-items:center;justify-content:center}
 .slide-media{width:180px;height:110px;border-radius:10px;margin-bottom:10px}
 .slide-caption{margin:0;color:var(--muted);font-weight:600}
@@ -82,11 +82,11 @@ body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helveti
   .lead-form{grid-template-columns:1fr}
   .hero-visual{width:100%}
   .visual-card{width:100%;height:180px}
+  .slide{min-width:180px;flex:0 0 180px}
 }
 .light-theme{--bg:#ffffff;--text:#1b1b1b;--muted:#6b6b6b;--card:#f8f9fa;--accent:#0d6efd}
 .dark-theme{--bg:#0f1720;--text:#e6eef8;--muted:#9fb0c8;--card:#0b1220;--accent:#4ea8ff}
   </style>
-  <script src="script.js" defer></script>
 </head>
 <body class="site light-theme">
 
@@ -130,7 +130,7 @@ body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helveti
     <h2 class="section-title">Популярные категории</h2>
     <div class="slider" id="category-slider" aria-roledescription="carousel">
       <div class="slides">
-        <article class="slide active" role="group" aria-label="Категория 1">
+        <article class="slide" role="group" aria-label="Категория 1">
           <div class="slide-media" style="background: linear-gradient(135deg,#a8edea,#fed6e3);"></div>
           <p class="slide-caption">Аудио и наушники</p>
         </article>
@@ -146,7 +146,7 @@ body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helveti
       <button class="prev" aria-label="Предыдущий">‹</button>
       <button class="next" aria-label="Следующий">›</button>
       <div class="dots" role="tablist">
-        <button class="dot active" aria-label="Слайд 1"></button>
+        <button class="dot" aria-label="Слайд 1"></button>
         <button class="dot" aria-label="Слайд 2"></button>
         <button class="dot" aria-label="Слайд 3"></button>
       </div>
@@ -265,5 +265,136 @@ body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helveti
   </div>
 </footer>
 
+<script>
+const themeBtn = document.getElementById('theme-toggle');
+const body = document.body;
+const cartCountEl = document.getElementById('cart-count');
+const addButtons = document.querySelectorAll('.add-btn');
+const removeButtons = document.querySelectorAll('.remove-btn');
+const moreBtn = document.getElementById('more-btn');
+const suggestBtn = document.getElementById('suggest-btn');
+const suggestText = document.getElementById('suggest-text');
+const form = document.getElementById('lead-form');
+const formResult = document.getElementById('form-result');
+
+let cart = {};
+
+function updateGlobalCount() {
+  const total = Object.values(cart).reduce((s,n)=>s+n,0);
+  cartCountEl.textContent = total;
+}
+
+function changeTheme() {
+  body.classList.toggle('dark-theme');
+  body.classList.toggle('light-theme');
+  const isDark = body.classList.contains('dark-theme');
+  themeBtn.textContent = isDark ? 'Светлая тема' : 'Тёмная тема';
+  themeBtn.setAttribute('aria-pressed', String(isDark));
+}
+
+themeBtn.addEventListener('click', changeTheme);
+
+addButtons.forEach(button => {
+  button.addEventListener('click', (e) => {
+    const card = e.target.closest('.product-card');
+    const id = card.dataset.id;
+    if (!cart[id]) cart[id] = 0;
+    cart[id] += 1;
+    const countEl = card.querySelector('.item-count');
+    countEl.textContent = cart[id];
+    updateGlobalCount();
+  });
+});
+
+removeButtons.forEach(button => {
+  button.addEventListener('click', (e) => {
+    const card = e.target.closest('.product-card');
+    const id = card.dataset.id;
+    if (!cart[id]) cart[id] = 0;
+    if (cart[id] > 0) {
+      cart[id] -= 1;
+      const countEl = card.querySelector('.item-count');
+      countEl.textContent = cart[id];
+      updateGlobalCount();
+    }
+  });
+});
+
+moreBtn.addEventListener('click', () => {
+  const shopSection = document.getElementById('shop');
+  shopSection.scrollIntoView({ behavior: 'smooth' });
+});
+
+const suggestions = [
+  'Если часто в дороге — обратите внимание на портативный аккумулятор Volt.',
+  'Для уютных вечеров подойдёт умная лампа Lumo.',
+  'Любите музыку — выбирайте беспроводные наушники Nova.',
+  'Для работы и звонков удобен смарт-держатель для телефона.'
+];
+
+suggestBtn.addEventListener('click', () => {
+  const index = Math.floor(Math.random() * suggestions.length);
+  suggestText.textContent = suggestions[index];
+});
+
+const sliderContainer = document.getElementById('category-slider');
+const slidesContainer = sliderContainer.querySelector('.slides');
+const slides = Array.from(slidesContainer.querySelectorAll('.slide'));
+const dots = Array.from(sliderContainer.querySelectorAll('.dot'));
+const prevBtn = sliderContainer.querySelector('.prev');
+const nextBtn = sliderContainer.querySelector('.next');
+
+let currentSlide = 0;
+let slideWidth = slides[0] ? slides[0].getBoundingClientRect().width : 0;
+let gap = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--gap')) || 16;
+
+function recalc() {
+  slideWidth = slides[0] ? slides[0].getBoundingClientRect().width : 0;
+  showSlide(currentSlide);
+}
+
+function showSlide(index) {
+  if (index < 0) index = slides.length - 1;
+  if (index >= slides.length) index = 0;
+  const offset = index * (slideWidth + gap);
+  slidesContainer.style.transform = `translateX(-${offset}px)`;
+  dots.forEach(d => d.classList.remove('active'));
+  if (dots[index]) dots[index].classList.add('active');
+  currentSlide = index;
+}
+
+nextBtn.addEventListener('click', () => {
+  showSlide(currentSlide + 1);
+});
+
+prevBtn.addEventListener('click', () => {
+  showSlide(currentSlide - 1);
+});
+
+dots.forEach((dot, i) => {
+  dot.addEventListener('click', () => {
+    showSlide(i);
+  });
+});
+
+window.addEventListener('resize', recalc);
+document.addEventListener('DOMContentLoaded', () => {
+  recalc();
+  showSlide(0);
+});
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const data = new FormData(form);
+  const values = {};
+  for (const [k,v] of data.entries()) values[k]=v;
+  if (!values.name || !values.email || !values.frequency || !values.pref) {
+    formResult.textContent = 'Пожалуйста, заполните обязательные поля.';
+    return;
+  }
+  formResult.textContent = 'Спасибо! Ваша заявка принята.';
+  form.reset();
+});
+</script>
 </body>
 </html>
