@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>PixelMarket — магазин гаджетов и аксессуаров</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+:root{
+  --bg:#ffffff;
+  --text:#1b1b1b;
+  --muted:#6b6b6b;
+  --accent:#0d6efd;
+  --card:#f8f9fa;
+  --radius:12px;
+  --container:1100px;
+  --gap:20px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.container{max-width:var(--container);margin:0 auto;padding:0 20px}
+.brand-title{font-family:'Playfair Display',serif;margin:0;font-size:22px;letter-spacing:0.2px}
+.brand-sub{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.header-row{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+.header-controls{display:flex;align-items:center;gap:16px}
+.btn{background:transparent;border:1px solid transparent;padding:10px 14px;border-radius:8px;font-weight:600;cursor:pointer}
+.btn.primary{background:var(--accent);color:#fff;border-color:transparent}
+.btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.06)}
+.theme-toggle{background:transparent;border:1px solid rgba(0,0,0,0.06)}
+.cart{display:flex;align-items:center;gap:8px;font-weight:600}
+.cart-count{background:var(--card);padding:6px 10px;border-radius:8px}
+.hero{padding:40px 0;display:flex;align-items:center}
+.hero-inner{display:flex;gap:40px;align-items:center}
+.hero-text{flex:1}
+.hero-title{font-family:'Playfair Display',serif;font-size:36px;margin:0 0 10px}
+.hero-lead{font-size:18px;margin:0 0 12px;color:var(--muted)}
+.hero-desc{margin:0 0 18px;color:var(--muted)}
+.hero-actions{display:flex;gap:12px}
+.hero-visual{width:320px;display:flex;justify-content:center}
+.visual-card{width:280px;height:220px;border-radius:16px;box-shadow:0 8px 24px rgba(16,24,40,0.08);overflow:hidden}
+.visual-image{width:100%;height:100%}
+.section-title{font-family:'Playfair Display',serif;font-size:24px;margin:30px 0 16px}
+.categories{padding:10px 0}
+.slider{position:relative;overflow:hidden;border-radius:12px;background:var(--card);padding:18px}
+.slides{display:flex;gap:16px;transition:transform .4s ease}
+.slide{min-width:220px;flex:0 0 220px;border-radius:10px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.4));display:flex;flex-direction:column;align-items:center;justify-content:center}
+.slide-media{width:180px;height:110px;border-radius:10px;margin-bottom:10px}
+.slide-caption{margin:0;color:var(--muted);font-weight:600}
+.prev,.next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.06);border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+.prev{left:12px}
+.next{right:12px}
+.dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+.dot{width:10px;height:10px;border-radius:50%;background:#dcdcdc;border:none;cursor:pointer}
+.dot.active{background:var(--accent)}
+.shop{padding:30px 0}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.product-card{background:var(--card);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 6px 18px rgba(16,24,40,0.04)}
+.product-media{height:140px}
+.product-body{padding:14px;display:flex;flex-direction:column;gap:8px}
+.product-title{font-size:18px;margin:0}
+.product-text{margin:0;color:var(--muted);font-size:14px}
+.product-price{margin:0;font-weight:700;color:var(--text)}
+.product-controls{display:flex;align-items:center;gap:8px;margin-top:6px}
+.item-count{min-width:28px;text-align:center;font-weight:700}
+.interactive{padding:20px 0}
+.recommendation{display:flex;align-items:center;gap:16px}
+.suggestion{font-weight:600;color:var(--muted)}
+.quiz{padding:20px 0}
+.lead-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-row{display:flex;flex-direction:column;gap:6px}
+.lead-form input, .lead-form select, .lead-form textarea{padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);font-size:14px}
+.lead-form textarea{grid-column:1 / -1}
+.form-actions{grid-column:1 / -1;display:flex;justify-content:flex-start}
+.form-result{margin-top:10px;color:var(--muted)}
+.site-footer{border-top:1px solid rgba(0,0,0,0.04);padding:18px 0;margin-top:30px}
+.footer-inner{display:flex;align-items:center;justify-content:space-between}
+.footer-links a{margin-left:12px;color:var(--muted);text-decoration:none;font-size:14px}
+.muted{color:var(--muted)}
+@media(max-width:900px){
+  .hero-inner{flex-direction:column-reverse;align-items:flex-start}
+  .lead-form{grid-template-columns:1fr}
+  .hero-visual{width:100%}
+  .visual-card{width:100%;height:180px}
+}
+.light-theme{--bg:#ffffff;--text:#1b1b1b;--muted:#6b6b6b;--card:#f8f9fa;--accent:#0d6efd}
+.dark-theme{--bg:#0f1720;--text:#e6eef8;--muted:#9fb0c8;--card:#0b1220;--accent:#4ea8ff}
+  </style>
+  <script src="script.js" defer></script>
+</head>
+<body class="site light-theme">
+
+<header class="site-header">
+  <div class="container header-row">
+    <div class="brand">
+      <h1 class="brand-title">PixelMarket</h1>
+      <p class="brand-sub">гаджеты, которые хочется держать в руках</p>
+    </div>
+    <nav class="header-controls" aria-label="Основные действия">
+      <button id="theme-toggle" class="btn theme-toggle" aria-pressed="false">Тёмная тема</button>
+      <div class="cart" aria-live="polite">
+        <span class="cart-label">Корзина</span>
+        <span id="cart-count" class="cart-count">0</span>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="hero">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <h2 class="hero-title">Удобные гаджеты для повседневной жизни</h2>
+        <p class="hero-lead">От компактных наушников до стильных аксессуаров — всё, что делает день проще и ярче.</p>
+        <p class="hero-desc">Быстрая доставка, честные цены и простая гарантия. Выберите то, что подходит именно вам.</p>
+        <div class="hero-actions">
+          <button id="more-btn" class="btn primary">Подробнее</button>
+          <a href="#shop" class="btn ghost">Каталог</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="visual-card">
+          <div class="visual-image" style="background: linear-gradient(135deg,#ffd89b,#19547b);"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="categories container">
+    <h2 class="section-title">Популярные категории</h2>
+    <div class="slider" id="category-slider" aria-roledescription="carousel">
+      <div class="slides">
+        <article class="slide active" role="group" aria-label="Категория 1">
+          <div class="slide-media" style="background: linear-gradient(135deg,#a8edea,#fed6e3);"></div>
+          <p class="slide-caption">Аудио и наушники</p>
+        </article>
+        <article class="slide" role="group" aria-label="Категория 2">
+          <div class="slide-media" style="background: linear-gradient(135deg,#f6d365,#fda085);"></div>
+          <p class="slide-caption">Аксессуары для дома</p>
+        </article>
+        <article class="slide" role="group" aria-label="Категория 3">
+          <div class="slide-media" style="background: linear-gradient(135deg,#c3cfe2,#c3cfe2);"></div>
+          <p class="slide-caption">Гаджеты для работы</p>
+        </article>
+      </div>
+      <button class="prev" aria-label="Предыдущий">‹</button>
+      <button class="next" aria-label="Следующий">›</button>
+      <div class="dots" role="tablist">
+        <button class="dot active" aria-label="Слайд 1"></button>
+        <button class="dot" aria-label="Слайд 2"></button>
+        <button class="dot" aria-label="Слайд 3"></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="shop" class="shop container">
+    <h2 class="section-title">Каталог товаров</h2>
+    <div class="products-grid">
+      <article class="product-card" data-id="p1">
+        <div class="product-media" style="background: linear-gradient(135deg,#fbc2eb,#a6c1ee);"></div>
+        <div class="product-body">
+          <h3 class="product-title">Беспроводные наушники Nova</h3>
+          <p class="product-text">Чистый звук, до 30 часов работы и компактный футляр для зарядки.</p>
+          <p class="product-price">2 990 ₽</p>
+          <div class="product-controls">
+            <button class="btn add-btn" aria-label="Добавить в корзину">В корзину</button>
+            <button class="btn remove-btn" aria-label="Убрать из корзины">−</button>
+            <span class="item-count" aria-live="polite">0</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card" data-id="p2">
+        <div class="product-media" style="background: linear-gradient(135deg,#fdfbfb,#ebedee);"></div>
+        <div class="product-body">
+          <h3 class="product-title">Умная лампа Lumo</h3>
+          <p class="product-text">Регулируемая яркость, теплые и холодные оттенки, управление с телефона.</p>
+          <p class="product-price">1 490 ₽</p>
+          <div class="product-controls">
+            <button class="btn add-btn">В корзину</button>
+            <button class="btn remove-btn">−</button>
+            <span class="item-count">0</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card" data-id="p3">
+        <div class="product-media" style="background: linear-gradient(135deg,#fceabb,#f8b500);"></div>
+        <div class="product-body">
+          <h3 class="product-title">Портативный аккумулятор Volt</h3>
+          <p class="product-text">Быстрая зарядка, компактный корпус и защита от перегрева.</p>
+          <p class="product-price">1 990 ₽</p>
+          <div class="product-controls">
+            <button class="btn add-btn">В корзину</button>
+            <button class="btn remove-btn">−</button>
+            <span class="item-count">0</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card" data-id="p4">
+        <div class="product-media" style="background: linear-gradient(135deg,#a1c4fd,#c2e9fb);"></div>
+        <div class="product-body">
+          <h3 class="product-title">Смарт-держатель для телефона</h3>
+          <p class="product-text">Удобный держатель с магнитным креплением и регулировкой угла.</p>
+          <p class="product-price">890 ₽</p>
+          <div class="product-controls">
+            <button class="btn add-btn">В корзину</button>
+            <button class="btn remove-btn">−</button>
+            <span class="item-count">0</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="interactive container">
+    <h2 class="section-title">Быстрая рекомендация</h2>
+    <p class="muted">Нажмите кнопку, чтобы получить персональную подсказку по выбору.</p>
+    <div class="recommendation">
+      <button id="suggest-btn" class="btn primary">Подобрать товар</button>
+      <div id="suggest-text" class="suggestion" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="quiz" class="quiz container">
+    <h2 class="section-title">Короткая анкета</h2>
+    <form id="lead-form" class="lead-form" novalidate>
+      <label class="form-row">Ваше имя
+        <input type="text" name="name" required>
+      </label>
+      <label class="form-row">Email
+        <input type="email" name="email" required>
+      </label>
+      <label class="form-row">Как часто вы используете гаджеты?
+        <select name="frequency" required>
+          <option value="">Выберите</option>
+          <option>Ежедневно</option>
+          <option>Несколько раз в неделю</option>
+          <option>Редко</option>
+        </select>
+      </label>
+      <label class="form-row">Какой тип устройств предпочитаете?
+        <input type="text" name="pref" required>
+      </label>
+      <label class="form-row">Комментарий
+        <textarea name="message" rows="3"></textarea>
+      </label>
+      <div class="form-actions">
+        <button type="submit" class="btn primary">Отправить</button>
+      </div>
+      <div id="form-result" class="form-result" aria-live="polite"></div>
+    </form>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p class="footer-copy">PixelMarket © 2026</p>
+    <nav class="footer-links" aria-label="Полезные ссылки">
+      <a href="#hero">О нас</a>
+      <a href="#shop">Каталог</a>
+      <a href="#quiz">Контакты</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
